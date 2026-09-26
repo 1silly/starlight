@@ -1,0 +1,3219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Starlight — Cute Cosmic Space</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #070713;
+            --bg2: #0d0b20;
+            --panel: rgba(20, 17, 43, 0.72);
+            --panel-solid: #15122d;
+            --purple: #9b6cff;
+            --purple-light: #c39cff;
+            --blue: #6db7ff;
+            --pink: #ff82c8;
+            --white: #ffffff;
+            --muted: #aaa6c5;
+            --border: rgba(255,255,255,0.09);
+            --success: #7cf2bd;
+            --danger: #ff718c;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: "Nunito", sans-serif;
+            color: var(--white);
+            background:
+                radial-gradient(circle at 10% 10%, rgba(155,108,255,.18), transparent 30%),
+                radial-gradient(circle at 90% 15%, rgba(109,183,255,.13), transparent 28%),
+                radial-gradient(circle at 50% 90%, rgba(255,130,200,.10), transparent 35%),
+                var(--bg);
+            overflow-x: hidden;
+        }
+
+        button,
+        input,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =========================
+           BACKGROUND
+        ========================= */
+
+        #stars {
+            position: fixed;
+            inset: 0;
+            z-index: -3;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            background: white;
+            opacity: .6;
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 90px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #fff);
+            transform: rotate(-35deg);
+            opacity: 0;
+            animation: shoot 8s infinite;
+        }
+
+        @keyframes twinkle {
+            0%,100% {
+                opacity: .2;
+                transform: scale(.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.5);
+            }
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translate(-100px,-100px) rotate(-35deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            25% {
+                transform: translate(100vw,70vh) rotate(-35deg);
+                opacity: 0;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        /* =========================
+           SCROLLBAR
+        ========================= */
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #090816;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--purple), var(--pink));
+            border-radius: 20px;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            position: fixed;
+            top: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(1180px, calc(100% - 30px));
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            background: rgba(12,10,28,.78);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            backdrop-filter: blur(22px);
+            box-shadow: 0 15px 50px rgba(0,0,0,.35);
+            z-index: 1000;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 0;
+            background: transparent;
+            color: white;
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .brand-star {
+            width: 38px;
+            height: 38px;
+            display: grid;
+            place-items: center;
+            border-radius: 13px;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            box-shadow: 0 0 25px rgba(155,108,255,.4);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 4px;
+        }
+
+        .nav-btn {
+            border: 0;
+            background: transparent;
+            color: #a9a5c1;
+            padding: 10px 13px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 800;
+            transition: .2s;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            color: white;
+            background: rgba(155,108,255,.13);
+        }
+
+        .auth-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .login-btn,
+        .signup-btn,
+        .logout-btn {
+            border: 0;
+            border-radius: 12px;
+            padding: 10px 16px;
+            font-weight: 900;
+            color: white;
+            transition: .2s;
+        }
+
+        .login-btn {
+            background: rgba(255,255,255,.07);
+            border: 1px solid var(--border);
+        }
+
+        .signup-btn {
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            box-shadow: 0 5px 20px rgba(155,108,255,.3);
+        }
+
+        .logout-btn {
+            background: rgba(255,113,140,.1);
+            color: #ff9aae;
+        }
+
+        .login-btn:hover,
+        .signup-btn:hover,
+        .logout-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 8px 5px 5px;
+            border-radius: 14px;
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--border);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg,var(--purple),var(--pink));
+            font-weight: 900;
+        }
+
+        .user-name {
+            font-size: 13px;
+            font-weight: 800;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           APP
+        ========================= */
+
+        main {
+            width: min(1180px, calc(100% - 30px));
+            margin: 0 auto;
+            padding-top: 125px;
+            padding-bottom: 70px;
+        }
+
+        .page {
+            display: none;
+            animation: pageIn .35s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes pageIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            min-height: 590px;
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 12px;
+            border: 1px solid rgba(195,156,255,.2);
+            border-radius: 30px;
+            background: rgba(155,108,255,.08);
+            color: var(--purple-light);
+            font-size: 12px;
+            font-weight: 900;
+            margin-bottom: 18px;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 7vw, 82px);
+            line-height: .95;
+            letter-spacing: -4px;
+            margin-bottom: 22px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #c49aff, #ff9bd5);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            max-width: 600px;
+            color: var(--muted);
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            border: 0;
+            padding: 14px 21px;
+            border-radius: 15px;
+            font-weight: 900;
+            transition: .2s;
+        }
+
+        .primary-btn {
+            color: white;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            box-shadow: 0 10px 35px rgba(155,108,255,.25);
+        }
+
+        .secondary-btn {
+            color: white;
+            background: rgba(255,255,255,.06);
+            border: 1px solid var(--border);
+        }
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .hero-card {
+            position: relative;
+            min-height: 400px;
+            display: grid;
+            place-items: center;
+        }
+
+        .planet {
+            width: 270px;
+            height: 270px;
+            border-radius: 50%;
+            background:
+                radial-gradient(circle at 30% 25%, #f0d9ff, transparent 4%),
+                radial-gradient(circle at 65% 35%, #7d56c9, transparent 25%),
+                radial-gradient(circle at 35% 70%, #4d3692, transparent 30%),
+                linear-gradient(135deg,#4b287c,#a463d8);
+            box-shadow:
+                0 0 50px rgba(155,108,255,.45),
+                0 0 120px rgba(155,108,255,.18);
+            animation: float 5s ease-in-out infinite;
+        }
+
+        .planet-ring {
+            position: absolute;
+            width: 370px;
+            height: 105px;
+            border: 8px solid rgba(255,190,235,.55);
+            border-radius: 50%;
+            transform: rotate(-18deg);
+            box-shadow: 0 0 25px rgba(255,130,200,.25);
+        }
+
+        .planet-moon {
+            position: absolute;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: #dce6ff;
+            top: 55px;
+            right: 70px;
+            box-shadow: 0 0 30px rgba(190,215,255,.7);
+        }
+
+        @keyframes float {
+            0%,100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-18px);
+            }
+        }
+
+        /* =========================
+           SECTION
+        ========================= */
+
+        .section-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .section-heading h2 {
+            font-size: 42px;
+            letter-spacing: -1.5px;
+            margin-bottom: 8px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 16px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            backdrop-filter: blur(18px);
+            box-shadow: 0 20px 60px rgba(0,0,0,.15);
+            transition: .25s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(195,156,255,.2);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 15px;
+            background: rgba(155,108,255,.12);
+            font-size: 23px;
+            margin-bottom: 18px;
+        }
+
+        .card h3 {
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            color: var(--muted);
+            line-height: 1.65;
+            font-size: 14px;
+        }
+
+        /* =========================
+           SHOP
+        ========================= */
+
+        .balance-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding: 20px 24px;
+            border-radius: 20px;
+            background: linear-gradient(
+                135deg,
+                rgba(155,108,255,.15),
+                rgba(255,130,200,.08)
+            );
+            border: 1px solid rgba(195,156,255,.16);
+        }
+
+        .balance-label {
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .balance-value {
+            font-size: 30px;
+            font-weight: 900;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 16px;
+        }
+
+        .shop-item {
+            text-align: center;
+        }
+
+        .item-icon {
+            width: 85px;
+            height: 85px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 15px;
+            border-radius: 25px;
+            font-size: 40px;
+            background: radial-gradient(
+                circle,
+                rgba(155,108,255,.2),
+                rgba(255,130,200,.06)
+            );
+            border: 1px solid var(--border);
+        }
+
+        .price {
+            margin: 12px 0;
+            color: #ffd878;
+            font-weight: 900;
+        }
+
+        .buy-btn,
+        .claim-btn {
+            width: 100%;
+            border: 0;
+            padding: 11px;
+            border-radius: 12px;
+            color: white;
+            background: linear-gradient(135deg,var(--purple),var(--pink));
+            font-weight: 900;
+        }
+
+        .buy-btn:disabled,
+        .claim-btn:disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            background: rgba(255,255,255,.08);
+        }
+
+        .owned {
+            color: var(--success);
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        /* =========================
+           REWARDS
+        ========================= */
+
+        .rewards-grid {
+            display: grid;
+            grid-template-columns: repeat(2,1fr);
+            gap: 16px;
+        }
+
+        .reward {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .reward-icon {
+            width: 65px;
+            height: 65px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 20px;
+            background: rgba(255,255,255,.06);
+            font-size: 29px;
+        }
+
+        .reward-info {
+            flex: 1;
+        }
+
+        .reward-info h3 {
+            margin-bottom: 4px;
+        }
+
+        .reward-info p {
+            font-size: 13px;
+        }
+
+        .reward-progress {
+            margin-top: 10px;
+            height: 6px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.07);
+            overflow: hidden;
+        }
+
+        .reward-progress span {
+            display: block;
+            height: 100%;
+            background: linear-gradient(90deg,var(--purple),var(--pink));
+            border-radius: inherit;
+        }
+
+        .reward-action {
+            width: 100px;
+            flex-shrink: 0;
+        }
+
+        /* =========================
+           DEVELOPERS
+        ========================= */
+
+        .developer-card {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 45px;
+        }
+
+        .developer-image {
+            width: 125px;
+            height: 125px;
+            object-fit: cover;
+            border-radius: 35px;
+            border: 3px solid rgba(195,156,255,.35);
+            box-shadow: 0 0 45px rgba(155,108,255,.25);
+            margin-bottom: 20px;
+        }
+
+        .developer-badge {
+            display: inline-block;
+            margin: 10px 0 15px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            background: rgba(255,130,200,.1);
+            color: #ff9ed5;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        /* =========================
+           DASHBOARD
+        ========================= */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 16px;
+        }
+
+        .profile-big {
+            text-align: center;
+        }
+
+        .big-avatar {
+            width: 90px;
+            height: 90px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 15px;
+            border-radius: 30px;
+            background: linear-gradient(135deg,var(--purple),var(--pink));
+            font-size: 35px;
+            font-weight: 900;
+        }
+
+        .email {
+            color: var(--muted);
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .stat {
+            padding: 15px 10px;
+            border-radius: 15px;
+            background: rgba(255,255,255,.04);
+            text-align: center;
+        }
+
+        .stat strong {
+            display: block;
+            font-size: 20px;
+        }
+
+        .stat span {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .field input,
+        .field textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            outline: none;
+            color: white;
+            background: rgba(0,0,0,.2);
+            border-radius: 13px;
+            padding: 13px 14px;
+        }
+
+        .field textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .field input:focus,
+        .field textarea:focus {
+            border-color: rgba(155,108,255,.5);
+            box-shadow: 0 0 0 3px rgba(155,108,255,.08);
+        }
+
+        .moods {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .mood-btn {
+            border: 1px solid var(--border);
+            color: #c6c2d7;
+            background: rgba(255,255,255,.04);
+            border-radius: 12px;
+            padding: 9px 12px;
+            font-weight: 700;
+        }
+
+        .mood-btn.selected {
+            color: white;
+            background: rgba(155,108,255,.18);
+            border-color: rgba(195,156,255,.3);
+        }
+
+        .danger-zone {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .delete-btn {
+            border: 1px solid rgba(255,113,140,.2);
+            background: rgba(255,113,140,.08);
+            color: #ff8ca2;
+            padding: 10px 15px;
+            border-radius: 11px;
+            font-weight: 800;
+        }
+
+        /* =========================
+           ABOUT
+        ========================= */
+
+        .about-card {
+            max-width: 850px;
+            margin: auto;
+            text-align: center;
+            padding: 45px;
+        }
+
+        .about-card p {
+            color: var(--muted);
+            line-height: 1.9;
+            margin-top: 15px;
+        }
+
+        /* =========================
+           LOCKED
+        ========================= */
+
+        .locked {
+            text-align: center;
+            padding: 70px 25px;
+        }
+
+        .locked-icon {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+        .locked h2 {
+            margin-bottom: 8px;
+        }
+
+        .locked p {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            z-index: 3000;
+            display: none;
+            place-items: center;
+            padding: 20px;
+            background: rgba(2,1,10,.75);
+            backdrop-filter: blur(12px);
+        }
+
+        .modal-backdrop.show {
+            display: grid;
+        }
+
+        .modal {
+            width: min(440px,100%);
+            position: relative;
+            padding: 30px;
+            border-radius: 25px;
+            background: #12102a;
+            border: 1px solid rgba(255,255,255,.1);
+            box-shadow: 0 30px 100px rgba(0,0,0,.55);
+            animation: modalIn .25s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(.94) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 35px;
+            height: 35px;
+            border: 0;
+            border-radius: 10px;
+            background: rgba(255,255,255,.06);
+            color: white;
+        }
+
+        .modal h2 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .modal-subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 22px;
+        }
+
+        .auth-tabs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5px;
+            padding: 4px;
+            border-radius: 13px;
+            background: rgba(255,255,255,.04);
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            border: 0;
+            padding: 10px;
+            border-radius: 10px;
+            color: var(--muted);
+            background: transparent;
+            font-weight: 900;
+        }
+
+        .auth-tab.active {
+            color: white;
+            background: rgba(155,108,255,.17);
+        }
+
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-message {
+            min-height: 20px;
+            color: var(--danger);
+            font-size: 13px;
+            margin-bottom: 7px;
+        }
+
+        .form-submit {
+            width: 100%;
+            border: 0;
+            padding: 13px;
+            border-radius: 13px;
+            color: white;
+            background: linear-gradient(135deg,var(--purple),var(--pink));
+            font-weight: 900;
+            margin-top: 5px;
+        }
+
+        /* =========================
+           TOAST
+        ========================= */
+
+        #toastContainer {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 5000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            min-width: 270px;
+            max-width: 360px;
+            padding: 14px 16px;
+            border-radius: 15px;
+            background: rgba(20,17,43,.95);
+            border: 1px solid var(--border);
+            box-shadow: 0 15px 50px rgba(0,0,0,.35);
+            animation: toastIn .25s ease;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .toast.success {
+            border-color: rgba(124,242,189,.25);
+        }
+
+        .toast.error {
+            border-color: rgba(255,113,140,.25);
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            width: min(1180px,calc(100% - 30px));
+            margin: 0 auto;
+            padding: 25px 0 40px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: #77738e;
+            font-size: 13px;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 950px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero p {
+                margin: auto;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .shop-grid {
+                grid-template-columns: repeat(2,1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                top: 10px;
+                height: 62px;
+            }
+
+            .brand span:last-child {
+                display: none;
+            }
+
+            .login-btn,
+            .signup-btn,
+            .logout-btn {
+                padding: 9px 11px;
+                font-size: 12px;
+            }
+
+            main {
+                padding-top: 100px;
+            }
+
+            .hero {
+                min-height: 500px;
+            }
+
+            .hero h1 {
+                letter-spacing: -2px;
+            }
+
+            .planet {
+                width: 200px;
+                height: 200px;
+            }
+
+            .planet-ring {
+                width: 275px;
+                height: 80px;
+            }
+
+            .grid,
+            .shop-grid,
+            .rewards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .reward {
+                flex-wrap: wrap;
+            }
+
+            .reward-action {
+                width: 100%;
+            }
+
+            .developer-card,
+            .about-card {
+                padding: 28px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div id="stars"></div>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<header class="navbar">
+
+    <button class="brand" onclick="showPage('home')">
+        <span class="brand-star">✦</span>
+        <span>Starlight</span>
+    </button>
+
+    <nav class="nav-links">
+        <button class="nav-btn active" data-page="home">Home</button>
+        <button class="nav-btn" data-page="features">Features</button>
+        <button class="nav-btn" data-page="shop">Star Shop</button>
+        <button class="nav-btn" data-page="rewards">Rewards</button>
+        <button class="nav-btn" data-page="developers">Developers</button>
+        <button class="nav-btn" data-page="about">About</button>
+        <button class="nav-btn" data-page="dashboard">Dashboard</button>
+    </nav>
+
+    <div class="auth-area" id="authArea"></div>
+
+</header>
+
+
+<main>
+
+    <!-- =========================
+         HOME
+    ========================= -->
+
+    <section class="page active" id="page-home">
+
+        <div class="hero">
+
+            <div>
+
+                <div class="eyebrow">
+                    ✨ A tiny universe made for you
+                </div>
+
+                <h1>
+                    Welcome to<br>
+                    <span class="gradient-text">Starlight.</span>
+                </h1>
+
+                <p>
+                    A cute little cosmic space where you can collect stars,
+                    unlock rewards, customize your profile and explore a
+                    magical universe made with purple, pink and blue dreams.
+                </p>
+
+                <div class="hero-buttons">
+                    <button class="primary-btn" onclick="openAuth('signup')">
+                        ✨ Create Account
+                    </button>
+
+                    <button class="secondary-btn" onclick="showPage('features')">
+                        Explore Starlight →
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="hero-card">
+
+                <div class="planet"></div>
+                <div class="planet-ring"></div>
+                <div class="planet-moon"></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         FEATURES
+    ========================= -->
+
+    <section class="page" id="page-features">
+
+        <div class="section-heading">
+            <h2>Little things to explore ✨</h2>
+            <p>Everything inside your own tiny cosmic universe.</p>
+        </div>
+
+        <div class="grid">
+
+            <div class="card">
+                <div class="feature-icon">⭐</div>
+                <h3>Star Currency</h3>
+                <p>
+                    Collect Starlight Stars and spend them on cute items
+                    inside the Star Shop.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="feature-icon">🛍️</div>
+                <h3>Star Shop</h3>
+                <p>
+                    Spend your stars on cosmic cosmetics and collect them
+                    permanently on your account.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="feature-icon">🎁</div>
+                <h3>Rewards</h3>
+                <p>
+                    Complete little challenges and claim bonus stars for
+                    your account.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="feature-icon">👤</div>
+                <h3>Your Profile</h3>
+                <p>
+                    Choose your mood, write a bio and customize your
+                    personal Starlight profile.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="feature-icon">🌙</div>
+                <h3>Cosmic Atmosphere</h3>
+                <p>
+                    Enjoy animated stars, glowing planets and a dreamy
+                    purple space environment.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="feature-icon">💫</div>
+                <h3>Progress</h3>
+                <p>
+                    Build your collection and slowly unlock more rewards
+                    as you explore Starlight.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         SHOP
+    ========================= -->
+
+    <section class="page" id="page-shop">
+
+        <div id="shopContent"></div>
+
+    </section>
+
+
+    <!-- =========================
+         REWARDS
+    ========================= -->
+
+    <section class="page" id="page-rewards">
+
+        <div id="rewardsContent"></div>
+
+    </section>
+
+
+    <!-- =========================
+         DEVELOPERS
+    ========================= -->
+
+    <section class="page" id="page-developers">
+
+        <div class="section-heading">
+            <h2>Developers & Contributors 💜</h2>
+            <p>The people behind this little universe.</p>
+        </div>
+
+        <div class="card developer-card">
+
+            <img
+                src="images/silly.png"
+                class="developer-image"
+                alt="Silly"
+                onerror="this.style.display='none'"
+            >
+
+            <h2>Silly</h2>
+
+            <div class="developer-badge">
+                ✦ Creator ✦ Owner ✦ Developer ✦
+            </div>
+            
+
+            <p>
+                Developer, creator and the person behind Starlight.
+                Building cute little projects, experimenting with code
+                and turning random ideas into actual things.
+                -- Yeah I own most of the things such as SillysMacro, Starlight (aka the one you're on rn!), and many more, check out my portfolio -- https://1silly.github.io/1sillyportfolio/
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         ABOUT
+    ========================= -->
+
+    <section class="page" id="page-about">
+
+        <div class="section-heading">
+            <h2>About Starlight 🌙</h2>
+            <p>A tiny cosmic playground.</p>
+        </div>
+
+        <div class="card about-card">
+
+            <div style="font-size:55px;">🌌</div>
+
+            <h2>What is Starlight?</h2>
+
+            <p>
+                Starlight is a cute cosmic website designed around
+                exploration, customization and collecting.
+            </p>
+
+            <p>
+                Create your own account, earn stars, unlock rewards,
+                purchase items from the Star Shop and customize your
+                personal profile.
+            </p>
+
+            <p>
+                Your account information is stored locally in your browser
+                so you can stay signed in while using the website.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         DASHBOARD
+    ========================= -->
+
+    <section class="page" id="page-dashboard">
+
+        <div id="dashboardContent"></div>
+
+    </section>
+
+</main>
+
+
+<footer>
+    ✦ Starlight · Made with 💜 and a little bit of magic
+</footer>
+
+
+<!-- =========================
+     AUTH MODAL
+========================= -->
+
+<div class="modal-backdrop" id="authModal">
+
+    <div class="modal">
+
+        <button class="close-modal" onclick="closeAuth()">×</button>
+
+        <h2 id="modalTitle">Welcome back ✨</h2>
+
+        <div class="modal-subtitle" id="modalSubtitle">
+            Enter your details to continue.
+        </div>
+
+        <div class="auth-tabs">
+
+            <button
+                class="auth-tab active"
+                id="loginTab"
+                onclick="switchAuth('login')"
+            >
+                Login
+            </button>
+
+            <button
+                class="auth-tab"
+                id="signupTab"
+                onclick="switchAuth('signup')"
+            >
+                Sign Up
+            </button>
+
+        </div>
+
+
+        <!-- LOGIN -->
+
+        <form class="auth-form active" id="loginForm">
+
+            <div class="field">
+                <label>Email</label>
+                <input
+                    type="email"
+                    id="loginEmail"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input
+                    type="password"
+                    id="loginPassword"
+                    placeholder="Your password"
+                    autocomplete="current-password"
+                    required
+                >
+            </div>
+
+            <div class="form-message" id="loginMessage"></div>
+
+            <button class="form-submit" type="submit">
+                Login ✨
+            </button>
+
+        </form>
+
+
+        <!-- SIGN UP -->
+
+        <form class="auth-form" id="signupForm">
+
+            <div class="field">
+                <label>Display Name</label>
+                <input
+                    type="text"
+                    id="signupName"
+                    placeholder="Silly haha<3 ✨"
+                    maxlength="24"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label>Email</label>
+                <input
+                    type="email"
+                    id="signupEmail"
+                    placeholder="you@example.com"
+                    autocomplete="email"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label>Password</label>
+                <input
+                    type="password"
+                    id="signupPassword"
+                    placeholder="At least 6 characters"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="field">
+                <label>Confirm Password</label>
+                <input
+                    type="password"
+                    id="signupConfirm"
+                    placeholder="Repeat your password"
+                    minlength="6"
+                    autocomplete="new-password"
+                    required
+                >
+            </div>
+
+            <div class="form-message" id="signupMessage"></div>
+
+            <button class="form-submit" type="submit">
+                Create Account ✦
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<div id="toastContainer"></div>
+
+
+<script>
+
+    /* =========================================
+       STARLIGHT DATABASE
+    ========================================= */
+
+    const ACCOUNT_KEY = "starlight_accounts";
+    const SESSION_KEY = "starlight_session";
+
+    const SHOP_ITEMS = [
+
+        {
+            id: "moon-bunny",
+            name: "Moon Bunny",
+            icon: "🐇",
+            price: 75,
+            description: "A tiny bunny from the moon."
+        },
+
+        {
+            id: "pink-aura",
+            name: "Pink Aura",
+            icon: "💗",
+            price: 120,
+            description: "A soft pink cosmic aura."
+        },
+
+        {
+            id: "star-crown",
+            name: "Star Crown",
+            icon: "👑",
+            price: 200,
+            description: "A crown worthy of a star."
+        },
+
+        {
+            id: "galaxy-pass",
+            name: "Galaxy Pass",
+            icon: "🌌",
+            price: 300,
+            description: "A mysterious pass to the galaxy."
+        }
+
+    ];
+
+
+    const REWARDS = [
+
+        {
+            id: "welcome",
+            name: "Welcome to Starlight",
+            icon: "🌟",
+            amount: 50,
+            description: "Create your Starlight account.",
+            requirement: "Create an account"
+        },
+
+        {
+            id: "explorer",
+            name: "Cosmic Explorer",
+            icon: "🚀",
+            amount: 75,
+            description: "Visit the Star Shop.",
+            requirement: "Visit Star Shop"
+        },
+
+        {
+            id: "profile",
+            name: "Make It Yours",
+            icon: "💜",
+            amount: 100,
+            description: "Save your profile.",
+            requirement: "Save your profile"
+        },
+
+        {
+            id: "collector",
+            name: "Little Collector",
+            icon: "🎀",
+            amount: 150,
+            description: "Own at least two shop items.",
+            requirement: "Own 2 shop items"
+        },
+
+        {
+            id: "mood",
+            name: "Mood Star",
+            icon: "✨",
+            amount: 75,
+            description: "Choose a profile mood.",
+            requirement: "Choose a mood"
+        }
+
+    ];
+
+
+    /* =========================================
+       STORAGE
+    ========================================= */
+
+    function getAccounts() {
+
+        try {
+
+            return JSON.parse(
+                localStorage.getItem(ACCOUNT_KEY)
+            ) || [];
+
+        } catch {
+
+            return [];
+
+        }
+
+    }
+
+
+    function saveAccounts(accounts) {
+
+        localStorage.setItem(
+            ACCOUNT_KEY,
+            JSON.stringify(accounts)
+        );
+
+    }
+
+
+    function getSessionId() {
+
+        return localStorage.getItem(SESSION_KEY);
+
+    }
+
+
+    function getCurrentUser() {
+
+        const sessionId = getSessionId();
+
+        if (!sessionId) {
+            return null;
+        }
+
+        const accounts = getAccounts();
+
+        return accounts.find(
+            account => account.id === sessionId
+        ) || null;
+
+    }
+
+
+    function updateCurrentUser(updatedUser) {
+
+        const accounts = getAccounts();
+
+        const index = accounts.findIndex(
+            account => account.id === updatedUser.id
+        );
+
+        if (index === -1) {
+            return false;
+        }
+
+        accounts[index] = updatedUser;
+
+        saveAccounts(accounts);
+
+        return true;
+
+    }
+
+
+    /* =========================================
+       PASSWORD HASHING
+    ========================================= */
+
+    async function hashPassword(password) {
+
+        const data = new TextEncoder().encode(password);
+
+        const hash = await crypto.subtle.digest(
+            "SHA-256",
+            data
+        );
+
+        return Array.from(
+            new Uint8Array(hash)
+        )
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join("");
+
+    }
+
+
+    /* =========================================
+       AUTH
+    ========================================= */
+
+    async function createAccount(
+        name,
+        email,
+        password
+    ) {
+
+        const accounts = getAccounts();
+
+        const cleanEmail = email.trim().toLowerCase();
+
+        const exists = accounts.some(
+            account =>
+                account.email.toLowerCase() === cleanEmail
+        );
+
+        if (exists) {
+
+            throw new Error(
+                "An account with this email already exists."
+            );
+
+        }
+
+        const passwordHash = await hashPassword(password);
+
+        const user = {
+
+            id:
+                typeof crypto.randomUUID === "function"
+                    ? crypto.randomUUID()
+                    : "user_" + Date.now(),
+
+            name: name.trim(),
+
+            email: cleanEmail,
+
+            passwordHash,
+
+            stars: 100,
+
+            ownedItems: [],
+
+            claimedRewards: [],
+
+            bio: "",
+
+            mood: "☁ Dreamy",
+
+            moodSelected: false,
+
+            profileSaved: false,
+
+            shopVisited: false,
+
+            createdAt: Date.now()
+
+        };
+
+
+        accounts.push(user);
+
+        saveAccounts(accounts);
+
+        localStorage.setItem(
+            SESSION_KEY,
+            user.id
+        );
+
+        return user;
+
+    }
+
+
+    async function login(email, password) {
+
+        const accounts = getAccounts();
+
+        const cleanEmail = email.trim().toLowerCase();
+
+        const passwordHash =
+            await hashPassword(password);
+
+        const user = accounts.find(
+            account =>
+                account.email.toLowerCase() === cleanEmail &&
+                account.passwordHash === passwordHash
+        );
+
+        if (!user) {
+
+            throw new Error(
+                "Incorrect email or password."
+            );
+
+        }
+
+        localStorage.setItem(
+            SESSION_KEY,
+            user.id
+        );
+
+        return user;
+
+    }
+
+
+    function logout() {
+
+        localStorage.removeItem(SESSION_KEY);
+
+        updateUI();
+
+        showPage("home");
+
+        showToast(
+            "You have been signed out. See you soon ✦",
+            "success"
+        );
+
+    }
+
+
+    function deleteAccount() {
+
+        const user = getCurrentUser();
+
+        if (!user) {
+            return;
+        }
+
+        const confirmed = confirm(
+            "Delete your Starlight account permanently from this browser?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        const accounts = getAccounts().filter(
+            account => account.id !== user.id
+        );
+
+        saveAccounts(accounts);
+
+        localStorage.removeItem(SESSION_KEY);
+
+        updateUI();
+
+        showPage("home");
+
+        showToast(
+            "Your local account has been deleted.",
+            "success"
+        );
+
+    }
+
+
+    /* =========================================
+       AUTH MODAL
+    ========================================= */
+
+    function openAuth(mode = "login") {
+
+        document
+            .getElementById("authModal")
+            .classList.add("show");
+
+        switchAuth(mode);
+
+    }
+
+
+    function closeAuth() {
+
+        document
+            .getElementById("authModal")
+            .classList.remove("show");
+
+        document
+            .getElementById("loginMessage")
+            .textContent = "";
+
+        document
+            .getElementById("signupMessage")
+            .textContent = "";
+
+    }
+
+
+    function switchAuth(mode) {
+
+        const login =
+            mode === "login";
+
+        document
+            .getElementById("loginTab")
+            .classList.toggle("active", login);
+
+        document
+            .getElementById("signupTab")
+            .classList.toggle("active", !login);
+
+        document
+            .getElementById("loginForm")
+            .classList.toggle("active", login);
+
+        document
+            .getElementById("signupForm")
+            .classList.toggle("active", !login);
+
+        document
+            .getElementById("modalTitle")
+            .textContent =
+                login
+                    ? "Welcome back ✨"
+                    : "Join Starlight ✦";
+
+        document
+            .getElementById("modalSubtitle")
+            .textContent =
+                login
+                    ? "Enter your details to continue."
+                    : "Create your own little cosmic account.";
+
+    }
+
+
+    /* =========================================
+       LOGIN FORM
+    ========================================= */
+
+    document
+        .getElementById("loginForm")
+        .addEventListener("submit", async event => {
+
+            event.preventDefault();
+
+            const email =
+                document
+                    .getElementById("loginEmail")
+                    .value;
+
+            const password =
+                document
+                    .getElementById("loginPassword")
+                    .value;
+
+            const message =
+                document
+                    .getElementById("loginMessage");
+
+            message.textContent = "";
+
+            try {
+
+                await login(email, password);
+
+                document
+                    .getElementById("loginForm")
+                    .reset();
+
+                closeAuth();
+
+                updateUI();
+
+                showToast(
+                    `Welcome back, ${getCurrentUser().name} ✨`,
+                    "success"
+                );
+
+            } catch (error) {
+
+                message.textContent =
+                    error.message;
+
+            }
+
+        });
+
+
+    /* =========================================
+       SIGNUP FORM
+    ========================================= */
+
+    document
+        .getElementById("signupForm")
+        .addEventListener("submit", async event => {
+
+            event.preventDefault();
+
+            const name =
+                document
+                    .getElementById("signupName")
+                    .value;
+
+            const email =
+                document
+                    .getElementById("signupEmail")
+                    .value;
+
+            const password =
+                document
+                    .getElementById("signupPassword")
+                    .value;
+
+            const confirmPassword =
+                document
+                    .getElementById("signupConfirm")
+                    .value;
+
+            const message =
+                document
+                    .getElementById("signupMessage");
+
+            message.textContent = "";
+
+            if (password !== confirmPassword) {
+
+                message.textContent =
+                    "Your passwords do not match.";
+
+                return;
+
+            }
+
+            if (password.length < 6) {
+
+                message.textContent =
+                    "Password must be at least 6 characters.";
+
+                return;
+
+            }
+
+            if (name.trim().length < 2) {
+
+                message.textContent =
+                    "Please enter a valid display name.";
+
+                return;
+
+            }
+
+            try {
+
+                await createAccount(
+                    name,
+                    email,
+                    password
+                );
+
+                document
+                    .getElementById("signupForm")
+                    .reset();
+
+                closeAuth();
+
+                updateUI();
+
+                showToast(
+                    "Account created! Welcome to Starlight ✨",
+                    "success"
+                );
+
+            } catch (error) {
+
+                message.textContent =
+                    error.message;
+
+            }
+
+        });
+
+
+    /* =========================================
+       NAVIGATION
+    ========================================= */
+
+    function showPage(page) {
+
+        const protectedPages = [
+            "shop",
+            "rewards",
+            "dashboard"
+        ];
+
+        if (
+            protectedPages.includes(page) &&
+            !getCurrentUser()
+        ) {
+
+            openAuth("login");
+
+            showToast(
+                "Please log in to use Starlight tools ✦",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        document
+            .querySelectorAll(".page")
+            .forEach(section => {
+
+                section.classList.remove("active");
+
+            });
+
+
+        const target =
+            document.getElementById(
+                "page-" + page
+            );
+
+        if (target) {
+            target.classList.add("active");
+        }
+
+
+        document
+            .querySelectorAll(".nav-btn")
+            .forEach(button => {
+
+                button.classList.toggle(
+                    "active",
+                    button.dataset.page === page
+                );
+
+            });
+
+
+        if (page === "shop") {
+
+            const user = getCurrentUser();
+
+            if (user) {
+
+                user.shopVisited = true;
+
+                updateCurrentUser(user);
+
+            }
+
+            renderShop();
+
+        }
+
+
+        if (page === "rewards") {
+            renderRewards();
+        }
+
+
+        if (page === "dashboard") {
+            renderDashboard();
+        }
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    document
+        .querySelectorAll(".nav-btn")
+        .forEach(button => {
+
+            button.addEventListener(
+                "click",
+                () => showPage(button.dataset.page)
+            );
+
+        });
+
+
+    /* =========================================
+       SHOP
+    ========================================= */
+
+    function renderShop() {
+
+        const user = getCurrentUser();
+
+        const container =
+            document.getElementById("shopContent");
+
+        if (!user) {
+
+            container.innerHTML = `
+                <div class="card locked">
+                    <div class="locked-icon">🔒</div>
+                    <h2>Star Shop Locked</h2>
+                    <p>Log in to spend your stars.</p>
+                    <button class="primary-btn" onclick="openAuth('login')">
+                        Login ✨
+                    </button>
+                </div>
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML = `
+
+            <div class="section-heading">
+                <h2>Star Shop 🛍️</h2>
+                <p>Spend your stars on cute cosmic items.</p>
+            </div>
+
+            <div class="balance-card">
+
+                <div>
+                    <div class="balance-label">
+                        Your Starlight Balance
+                    </div>
+
+                    <div class="balance-value">
+                        ⭐ ${user.stars}
+                    </div>
+                </div>
+
+                <div>
+                    <span style="color:#aaa6c5;font-size:13px;">
+                        ${user.ownedItems.length} items owned
+                    </span>
+                </div>
+
+            </div>
+
+            <div class="shop-grid">
+
+                ${SHOP_ITEMS.map(item => {
+
+                    const owned =
+                        user.ownedItems.includes(item.id);
+
+                    const affordable =
+                        user.stars >= item.price;
+
+                    return `
+
+                        <div class="card shop-item">
+
+                            <div class="item-icon">
+                                ${item.icon}
+                            </div>
+
+                            <h3>${item.name}</h3>
+
+                            <p>
+                                ${item.description}
+                            </p>
+
+                            <div class="price">
+                                ⭐ ${item.price}
+                            </div>
+
+                            ${
+                                owned
+                                    ? `
+                                        <div class="owned">
+                                            ✓ Owned
+                                        </div>
+                                    `
+                                    : `
+                                        <button
+                                            class="buy-btn"
+                                            ${
+                                                affordable
+                                                    ? ""
+                                                    : "disabled"
+                                            }
+                                            onclick="buyItem('${item.id}')"
+                                        >
+                                            ${
+                                                affordable
+                                                    ? "Purchase"
+                                                    : "Not enough stars"
+                                            }
+                                        </button>
+                                    `
+                            }
+
+                        </div>
+
+                    `;
+
+                }).join("")}
+
+            </div>
+        `;
+
+    }
+
+
+    function buyItem(itemId) {
+
+        const user = getCurrentUser();
+
+        if (!user) {
+
+            openAuth("login");
+
+            return;
+
+        }
+
+
+        const item =
+            SHOP_ITEMS.find(
+                item => item.id === itemId
+            );
+
+        if (!item) {
+            return;
+        }
+
+
+        if (user.ownedItems.includes(itemId)) {
+
+            showToast(
+                "You already own this item.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (user.stars < item.price) {
+
+            showToast(
+                "You don't have enough stars.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        user.stars -= item.price;
+
+        user.ownedItems.push(itemId);
+
+        updateCurrentUser(user);
+
+        renderShop();
+
+        updateUI();
+
+        showToast(
+            `${item.name} purchased! ${item.icon}`,
+            "success"
+        );
+
+    }
+
+
+    /* =========================================
+       REWARDS
+    ========================================= */
+
+    function isRewardComplete(
+        user,
+        reward
+    ) {
+
+        switch (reward.id) {
+
+            case "welcome":
+                return true;
+
+            case "explorer":
+                return user.shopVisited;
+
+            case "profile":
+                return user.profileSaved;
+
+            case "collector":
+                return user.ownedItems.length >= 2;
+
+            case "mood":
+                return user.moodSelected;
+
+            default:
+                return false;
+
+        }
+
+    }
+
+
+    function renderRewards() {
+
+        const user = getCurrentUser();
+
+        const container =
+            document.getElementById("rewardsContent");
+
+
+        if (!user) {
+
+            container.innerHTML = `
+
+                <div class="card locked">
+
+                    <div class="locked-icon">
+                        🔒
+                    </div>
+
+                    <h2>Rewards Locked</h2>
+
+                    <p>
+                        Log in to complete challenges
+                        and claim stars.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        onclick="openAuth('login')"
+                    >
+                        Login ✨
+                    </button>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        container.innerHTML = `
+
+            <div class="section-heading">
+
+                <h2>Cosmic Rewards 🎁</h2>
+
+                <p>
+                    Complete little challenges
+                    to earn more stars.
+                </p>
+
+            </div>
+
+            <div class="balance-card">
+
+                <div>
+                    <div class="balance-label">
+                        Your Stars
+                    </div>
+
+                    <div class="balance-value">
+                        ⭐ ${user.stars}
+                    </div>
+                </div>
+
+                <div>
+                    ${user.claimedRewards.length}/${REWARDS.length} claimed
+                </div>
+
+            </div>
+
+            <div class="rewards-grid">
+
+                ${REWARDS.map(reward => {
+
+                    const complete =
+                        isRewardComplete(
+                            user,
+                            reward
+                        );
+
+                    const claimed =
+                        user.claimedRewards.includes(
+                            reward.id
+                        );
+
+                    const progress =
+                        complete
+                            ? 100
+                            : 0;
+
+                    return `
+
+                        <div class="card reward">
+
+                            <div class="reward-icon">
+                                ${reward.icon}
+                            </div>
+
+                            <div class="reward-info">
+
+                                <h3>
+                                    ${reward.name}
+                                </h3>
+
+                                <p>
+                                    ${reward.description}
+                                </p>
+
+                                <div class="reward-progress">
+                                    <span
+                                        style="width:${progress}%"
+                                    ></span>
+                                </div>
+
+                                <p style="margin-top:7px;">
+                                    ⭐ ${reward.amount}
+                                    · ${reward.requirement}
+                                </p>
+
+                            </div>
+
+                            <div class="reward-action">
+
+                                <button
+                                    class="claim-btn"
+                                    ${
+                                        !complete || claimed
+                                            ? "disabled"
+                                            : ""
+                                    }
+                                    onclick="claimReward('${reward.id}')"
+                                >
+                                    ${
+                                        claimed
+                                            ? "Claimed ✓"
+                                            : complete
+                                                ? "Claim"
+                                                : "Locked"
+                                    }
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    `;
+
+                }).join("")}
+
+            </div>
+        `;
+
+    }
+
+
+    function claimReward(rewardId) {
+
+        const user = getCurrentUser();
+
+        if (!user) {
+
+            openAuth("login");
+
+            return;
+
+        }
+
+
+        const reward =
+            REWARDS.find(
+                reward => reward.id === rewardId
+            );
+
+        if (!reward) {
+            return;
+        }
+
+
+        if (
+            user.claimedRewards.includes(
+                rewardId
+            )
+        ) {
+
+            showToast(
+                "You already claimed this reward.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !isRewardComplete(
+                user,
+                reward
+            )
+        ) {
+
+            showToast(
+                "Complete the requirement first ✦",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        user.stars += reward.amount;
+
+        user.claimedRewards.push(
+            rewardId
+        );
+
+        updateCurrentUser(user);
+
+        renderRewards();
+
+        updateUI();
+
+        showToast(
+            `+${reward.amount} stars earned! ⭐`,
+            "success"
+        );
+
+    }
+
+
+    /* =========================================
+       DASHBOARD
+    ========================================= */
+
+    function renderDashboard() {
+
+        const user = getCurrentUser();
+
+        const container =
+            document.getElementById(
+                "dashboardContent"
+            );
+
+
+        if (!user) {
+
+            container.innerHTML = `
+
+                <div class="card locked">
+
+                    <div class="locked-icon">
+                        🔒
+                    </div>
+
+                    <h2>Dashboard Locked</h2>
+
+                    <p>
+                        Log in to access your profile.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        onclick="openAuth('login')"
+                    >
+                        Login ✨
+                    </button>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        const firstLetter =
+            user.name
+                .charAt(0)
+                .toUpperCase();
+
+
+        container.innerHTML = `
+
+            <div class="section-heading">
+
+                <h2>Your Cosmic Dashboard 🌙</h2>
+
+                <p>
+                    Make your little corner of Starlight yours.
+                </p>
+
+            </div>
+
+            <div class="dashboard-grid">
+
+                <div class="card profile-big">
+
+                    <div class="big-avatar">
+                        ${firstLetter}
+                    </div>
+
+                    <h2>
+                        ${escapeHTML(user.name)}
+                    </h2>
+
+                    <div class="email">
+                        ${escapeHTML(user.email)}
+                    </div>
+
+                    <div class="stat-row">
+
+                        <div class="stat">
+                            <strong>
+                                ⭐ ${user.stars}
+                            </strong>
+                            <span>Stars</span>
+                        </div>
+
+                        <div class="stat">
+                            <strong>
+                                ${user.ownedItems.length}
+                            </strong>
+                            <span>Items</span>
+                        </div>
+
+                        <div class="stat">
+                            <strong>
+                                ${user.claimedRewards.length}
+                            </strong>
+                            <span>Rewards</span>
+                        </div>
+
+                    </div>
+
+                    <div
+                        style="
+                            margin-top:25px;
+                            padding:15px;
+                            border-radius:15px;
+                            background:rgba(255,255,255,.04);
+                        "
+                    >
+
+                        <div
+                            style="
+                                color:#aaa6c5;
+                                font-size:12px;
+                            "
+                        >
+                            Current mood
+                        </div>
+
+                        <strong>
+                            ${escapeHTML(user.mood)}
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <h2 style="margin-bottom:20px;">
+                        Edit Profile ✨
+                    </h2>
+
+                    <div class="field">
+
+                        <label>
+                            Display Name
+                        </label>
+
+                        <input
+                            id="profileName"
+                            maxlength="24"
+                            value="${escapeHTML(user.name)}"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Bio
+                        </label>
+
+                        <textarea
+                            id="profileBio"
+                            maxlength="180"
+                            placeholder="Tell the universe something about you..."
+                        >${escapeHTML(user.bio)}</textarea>
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            Your Mood
+                        </label>
+
+                        <div class="moods">
+
+                            ${[
+                                "☁ Dreamy",
+                                "✨ Sparkly",
+                                "🧸 Cozy",
+                                "🌌 Cosmic",
+                                "💗 Pink"
+                            ].map(mood => `
+
+                                <button
+                                    class="mood-btn ${
+                                        user.mood === mood
+                                            ? "selected"
+                                            : ""
+                                    }"
+                                    onclick="selectMood('${mood}')"
+                                >
+                                    ${mood}
+                                </button>
+
+                            `).join("")}
+
+                        </div>
+
+                    </div>
+
+
+                    <button
+                        class="primary-btn"
+                        onclick="saveProfile()"
+                    >
+                        Save Profile 💜
+                    </button>
+
+
+                    <div class="danger-zone">
+
+                        <h3 style="margin-bottom:7px;">
+                            Danger Zone
+                        </h3>
+
+                        <p
+                            style="
+                                color:#aaa6c5;
+                                font-size:13px;
+                                margin-bottom:12px;
+                            "
+                        >
+                            Delete the account stored in this browser.
+                        </p>
+
+                        <button
+                            class="delete-btn"
+                            onclick="deleteAccount()"
+                        >
+                            Delete Account
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+        `;
+
+    }
+
+
+    function selectMood(mood) {
+
+        const user = getCurrentUser();
+
+        if (!user) {
+            return;
+        }
+
+        user.mood = mood;
+
+        user.moodSelected = true;
+
+        updateCurrentUser(user);
+
+        renderDashboard();
+
+        showToast(
+            `Mood changed to ${mood}`,
+            "success"
+        );
+
+    }
+
+
+    function saveProfile() {
+
+        const user = getCurrentUser();
+
+        if (!user) {
+            return;
+        }
+
+
+        const name =
+            document
+                .getElementById("profileName")
+                .value
+                .trim();
+
+
+        const bio =
+            document
+                .getElementById("profileBio")
+                .value
+                .trim();
+
+
+        if (name.length < 2) {
+
+            showToast(
+                "Your name is too short.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        user.name = name;
+
+        user.bio = bio;
+
+        user.profileSaved = true;
+
+        updateCurrentUser(user);
+
+        renderDashboard();
+
+        updateUI();
+
+        showToast(
+            "Profile saved successfully 💜",
+            "success"
+        );
+
+    }
+
+
+    /* =========================================
+       UI
+    ========================================= */
+
+    function updateUI() {
+
+        const user = getCurrentUser();
+
+        const authArea =
+            document.getElementById(
+                "authArea"
+            );
+
+
+        if (!user) {
+
+            authArea.innerHTML = `
+
+                <button
+                    class="login-btn"
+                    onclick="openAuth('login')"
+                >
+                    Login
+                </button>
+
+                <button
+                    class="signup-btn"
+                    onclick="openAuth('signup')"
+                >
+                    Sign Up
+                </button>
+
+            `;
+
+            return;
+
+        }
+
+
+        const letter =
+            user.name
+                .charAt(0)
+                .toUpperCase();
+
+
+        authArea.innerHTML = `
+
+            <div class="user-pill">
+
+                <div class="user-avatar">
+                    ${escapeHTML(letter)}
+                </div>
+
+                <span class="user-name">
+                    ${escapeHTML(user.name)}
+                </span>
+
+            </div>
+
+            <button
+                class="logout-btn"
+                onclick="logout()"
+            >
+                Sign Out
+            </button>
+
+        `;
+
+    }
+
+
+    /* =========================================
+       TOASTS
+    ========================================= */
+
+    function showToast(
+        message,
+        type = "success"
+    ) {
+
+        const container =
+            document.getElementById(
+                "toastContainer"
+            );
+
+
+        const toast =
+            document.createElement("div");
+
+        toast.className =
+            `toast ${type}`;
+
+        toast.textContent =
+            message;
+
+
+        container.appendChild(toast);
+
+
+        setTimeout(() => {
+
+            toast.style.opacity = "0";
+
+            toast.style.transform =
+                "translateX(30px)";
+
+            setTimeout(
+                () => toast.remove(),
+                250
+            );
+
+        }, 3000);
+
+    }
+
+
+    /* =========================================
+       SAFE TEXT
+    ========================================= */
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    /* =========================================
+       BACKGROUND STARS
+    ========================================= */
+
+    function createStars() {
+
+        const container =
+            document.getElementById("stars");
+
+
+        for (let i = 0; i < 140; i++) {
+
+            const star =
+                document.createElement("div");
+
+            star.className = "star";
+
+            star.style.left =
+                Math.random() * 100 + "%";
+
+            star.style.top =
+                Math.random() * 100 + "%";
+
+            const size =
+                Math.random() * 2.5 + 1;
+
+            star.style.width =
+                size + "px";
+
+            star.style.height =
+                size + "px";
+
+            star.style.animationDelay =
+                Math.random() * 4 + "s";
+
+            star.style.animationDuration =
+                2 + Math.random() * 4 + "s";
+
+            container.appendChild(star);
+
+        }
+
+
+        for (let i = 0; i < 4; i++) {
+
+            const shooting =
+                document.createElement("div");
+
+            shooting.className =
+                "shooting-star";
+
+            shooting.style.left =
+                Math.random() * 70 + "%";
+
+            shooting.style.top =
+                Math.random() * 50 + "%";
+
+            shooting.style.animationDelay =
+                Math.random() * 8 + "s";
+
+            container.appendChild(shooting);
+
+        }
+
+    }
+
+
+    /* =========================================
+       ESCAPE KEY / MODAL
+    ========================================= */
+
+    document.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Escape") {
+                closeAuth();
+            }
+
+        }
+    );
+
+
+    document
+        .getElementById("authModal")
+        .addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target.id ===
+                    "authModal"
+                ) {
+
+                    closeAuth();
+
+                }
+
+            }
+        );
+
+
+    /* =========================================
+       START APP
+    ========================================= */
+
+    createStars();
+
+    updateUI();
+
+</script>
+
+</body>
+</html>
